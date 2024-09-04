@@ -6,14 +6,14 @@ import Stack from '@mui/material/Stack';
 // ==============================|| FOOTER - AUTHENTICATION 2 & 3 ||============================== //
 
 const AuthFooter = () => (
-  <Stack direction="row" justifyContent="space-between">
-    <Typography variant="subtitle2" component={Link} href="https://www.ittraininghub.io/" target="_blank" underline="hover">
-      ittraininghub.io
-    </Typography>
-    <Typography variant="subtitle2" component={Link} href="https://www.ittraininghub.io/about/" target="_blank" underline="hover">
-      &copy; ITH - Devs Team
-    </Typography>
-  </Stack>
+    <Stack direction="row" justifyContent="space-between">
+        <Typography variant="subtitle2" component={Link} href="https://www.ittraininghub.io/" target="_blank" underline="hover">
+            ittraininghub.io
+        </Typography>
+        <Typography variant="subtitle2" component={Link} href="https://www.ittraininghub.io/about/" target="_blank" underline="hover">
+            &copy; ITH - Devs Team
+        </Typography>
+    </Stack>
 );
 
 export default AuthFooter;

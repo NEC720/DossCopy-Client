@@ -20,92 +20,96 @@ const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
-  path: '/',
-  element: <MainLayout />,
-  children: [
-    {
-      path: '/',
-      element: <DashboardDefault />
-    },
-    {
-      path: 'dashboard',
-      children: [
+    path: '/',
+    element: <MainLayout />,
+    children: [
         {
-          path: 'default',
-          element: <DashboardDefault />
-        }
-      ]
-    },
-    {
-      path: 'utils',
-      children: [
+            path: '/',
+            element: <DashboardDefault />
+        },
         {
-          path: 'util-typography',
-          element: <UtilsTypography />
-        }
-      ]
-    },
-    {
-      path: 'utils',
-      children: [
+            path: 'dashboard',
+            children: [
+                {
+                    path: 'default',
+                    element: <DashboardDefault />
+                }
+            ]
+        },
         {
-          path: 'util-color',
-          element: <UtilsColor />
-        }
-      ]
-    },
-    {
-      path: 'utils',
-      children: [
+            path: 'utils',
+            children: [
+                {
+                    path: 'util-typography',
+                    element: <UtilsTypography />
+                }
+            ]
+        },
         {
-          path: 'util-shadow',
-          element: <UtilsShadow />
-        }
-      ]
-    },
-    // {
-    //   path: 'icons',
-    //   children: [
-    //     {
-    //       path: 'tabler-icons',
-    //       element: <UtilsTablerIcons />
-    //     }
-    //   ]
-    // },
-    // {
-    //   path: 'icons',
-    //   children: [
-    //     {
-    //       path: 'material-icons',
-    //       element: <UtilsMaterialIcons />
-    //     }
-    //   ]
-    // },
+            path: 'utils',
+            children: [
+                {
+                    path: 'util-color',
+                    element: <UtilsColor />
+                }
+            ]
+        },
+        {
+            path: 'utils',
+            children: [
+                {
+                    path: 'util-shadow',
+                    element: <UtilsShadow />
+                }
+            ]
+        },
+        // {
+        //   path: 'icons',
+        //   children: [
+        //     {
+        //       path: 'tabler-icons',
+        //       element: <UtilsTablerIcons />
+        //     }
+        //   ]
+        // },
+        // {
+        //   path: 'icons',
+        //   children: [
+        //     {
+        //       path: 'material-icons',
+        //       element: <UtilsMaterialIcons />
+        //     }
+        //   ]
+        // },
 
-    {
-      path: 'suivi',
-      children: [
         {
-          path: 'history',
-          element: <SamplePage />
-        }
-      ]
-    },
-    {
-      path: 'suivi',
-      children: [
-        {
-          path: 'userstats',
-          element: <SamplePage />
-        }
-      ]
-    },
+            path: 'suivi',
+            children: [
+                {
+                    path: 'history',
+                    element: <SamplePage />
+                },
+                {
+                    path: 'userstats',
+                    element: <SamplePage />
+                }
+            ]
+        },
+        // {
+        //     path: 'suivi',
+        //     children: [
+        //         {
+        //             path: 'userstats',
+        //             element: <SamplePage />
+        //         }
+        //     ]
+        // },
 
-    {
-      path: 'sample-page',
-      element: <SamplePage />
-    }
-  ]
+        {
+            path: 'sample-page',
+            element: <SamplePage />
+        }
+    ]
 };
 
 export default MainRoutes;
