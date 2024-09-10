@@ -3,6 +3,8 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
+// import ImpressionPage from 'views/Imprimer/ImpressionPage';
+import PrintRequest from 'views/Imprimer/PrintRequest';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
@@ -33,6 +35,15 @@ const MainRoutes = {
                 {
                     path: 'default',
                     element: <DashboardDefault />
+                }
+            ]
+        },
+        {
+            path: 'dashboard',
+            children: [
+                {
+                    path: 'print',
+                    element: <PrintRequest />
                 }
             ]
         },
