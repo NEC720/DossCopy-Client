@@ -99,22 +99,18 @@ const MainRoutes = {
                 {
                     path: 'history',
                     element: <SamplePage />
-                },
+                }
+            ]
+        },
+        {
+            path: 'suivi',
+            children: [
                 {
                     path: 'userstats',
                     element: <SamplePage />
                 }
             ]
         },
-        // {
-        //     path: 'suivi',
-        //     children: [
-        //         {
-        //             path: 'userstats',
-        //             element: <SamplePage />
-        //         }
-        //     ]
-        // },
 
         {
             path: 'sample-page',

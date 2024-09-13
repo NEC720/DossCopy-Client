@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
@@ -18,6 +18,10 @@ import { drawerWidth } from 'store/constant';
 
 // assets
 import { IconChevronRight } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
+
+// services
+import api from 'services/api';
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && prop !== 'theme' })(({ theme, open }) => ({
     ...theme.typography.mainContent,
@@ -55,6 +59,11 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && pr
 // ==============================|| MAIN LAYOUT ||============================== //
 
 const MainLayout = () => {
+    // =================
+    const navigate = useNavigate();
+    const [isTokenValid, setIsTokenValid] = useState(false);
+    // =================
+
     const theme = useTheme();
     const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
     // Handle left drawer
@@ -63,6 +72,38 @@ const MainLayout = () => {
     const handleLeftDrawerToggle = () => {
         dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
     };
+
+    // verify token
+    useEffect(() => {
+        //
+        const verifyToken = async () => {
+            if (localStorage.getItem('utilisateur')) {
+                try {
+                    const user = JSON.parse(localStorage.getItem('utilisateur'));
+                    console.log('user', user);
+
+                    const response = await api.post('/auth/verifytoken', user);
+                    console.log(response, response.data, response.data.valid);
+
+                    if (!response.data.valid) {
+                        toast.error('Token invalide. Vous devez vous reconnecter.');
+                        localStorage.removeItem('utilisateur');
+                        navigate('/pages/login/login3');
+                    } else {
+                        setIsTokenValid(true);
+                    }
+                } catch (error) {
+                    console.error('Error verifying token:', error);
+                    localStorage.removeItem('utilisateur');
+                    navigate('/pages/login/login3');
+                }
+            } else {
+                navigate('/pages/login/login3');
+            }
+        };
+
+        verifyToken();
+    }, [navigate]);
 
     return (
         <Box sx={{ display: 'flex' }}>
