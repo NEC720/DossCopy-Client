@@ -5,6 +5,8 @@ import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 // import ImpressionPage from 'views/Imprimer/ImpressionPage';
 import PrintRequest from 'views/Imprimer/PrintRequest';
+import { UserProfile } from 'views/profileSection/UserProfile';
+import UserProfileView from 'views/profileSection/UserProfileView';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
@@ -115,6 +117,15 @@ const MainRoutes = {
         {
             path: 'sample-page',
             element: <SamplePage />
+        },
+
+        {
+            path: 'apps/profiles/user/personal',
+            element: <UserProfile />
+        },
+        {
+            path: '/apps/profiles/account/basic',
+            element: <UserProfileView />
         }
     ]
 };
