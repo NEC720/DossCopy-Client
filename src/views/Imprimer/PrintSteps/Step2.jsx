@@ -8,7 +8,7 @@ import 'leaflet/dist/leaflet.css'; // Import du CSS de Leaflet
 
 // Icônes personnalisées
 const currentLocationIcon = L.icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png', // Jaune fluo
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -16,8 +16,17 @@ const currentLocationIcon = L.icon({
     shadowSize: [41, 41]
 });
 
-const nearestLocationIcon = L.icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+const openCyberIcon = L.icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png', // Vert pour Ouvert
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+const closedCyberIcon = L.icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', // Rouge pour Fermer
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -130,7 +139,7 @@ export default function Step2({ onNext, onBack }) {
                                     <Marker
                                         key={cyber.id}
                                         position={[cyber.latitude, cyber.longitude]}
-                                        icon={index === 0 ? nearestLocationIcon : defaultIcon}
+                                        icon={cyber.status === 'Ouvert' ? openCyberIcon : closedCyberIcon}
                                         eventHandlers={{
                                             click: () => setSelectedCyber(cyber)
                                         }}
@@ -150,14 +159,14 @@ export default function Step2({ onNext, onBack }) {
                         <CardMedia
                             component="img"
                             height="140"
-                            image={`/path/to/cyber/images/${selectedCyber.id}.jpg`} // Placeholder pour les images des cybers
+                            image={`https://ordiland.com/img/cms/cyber-2.JPG`} // Placeholder pour les images des cybers
                             alt={selectedCyber.name}
                         />
                         <CardContent>
                             <Typography variant="h5">{selectedCyber.name}</Typography>
                             <Typography>{selectedCyber.address}</Typography>
                             <Typography>Horaires : {selectedCyber.openHours}</Typography>
-                            <Typography>Disponibilité : {selectedCyber.availability}</Typography>
+                            <Typography>Disponibilité : {selectedCyber.status}</Typography>
                             <Rating value={selectedCyber.rating} readOnly />
                         </CardContent>
                     </Card>

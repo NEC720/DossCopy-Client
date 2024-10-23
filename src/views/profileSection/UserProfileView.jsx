@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { fr } from 'date-fns/locale';
+import { format } from 'date-fns';
 import {
     Container,
     TextField,
@@ -7,7 +11,7 @@ import {
     Avatar,
     IconButton,
     MenuItem,
-    InputAdornment,
+    // InputAdornment,
     Card,
     CardContent,
     Typography,
@@ -17,9 +21,26 @@ import {
     Badge,
     Alert,
     Snackbar,
-    AlertTitle
+    AlertTitle,
+    DialogActions,
+    Checkbox,
+    FormControlLabel,
+    DialogContent,
+    DialogTitle,
+    Dialog
 } from '@mui/material';
-import { AlignHorizontalCenter, DeleteRounded, DoneAllRounded, Lock, PhotoCamera } from '@mui/icons-material';
+import { DeleteRounded, DoneAllRounded, Lock, PhotoCamera } from '@mui/icons-material';
+
+import UserAccess from './components/UserAccess';
+import StorageCard from './components/StorageCard';
+
+import MoMoLogo from 'assets/images/paiement-logos/group_momo.png';
+import AirtelLogo from 'assets/images/paiement-logos/airtel_money.png';
+import PayPalLogo from 'assets/images/paiement-logos/PP_Acceptance_Marks_for_LogoCenter2.png';
+import VisaLogo from 'assets/images/paiement-logos/visa_card.png';
+import MasterCardLogo from 'assets/images/paiement-logos/master_card.png';
+
+import { margin } from '@mui/system';
 
 const UserProfileView = () => {
     const [formData, setFormData] = useState({
@@ -30,7 +51,7 @@ const UserProfileView = () => {
         phone: '477-046-1827',
         address: '116 Jaskolski Stravonue Suite 883',
         nation: 'Congo',
-        gender: 'Homme',
+        genre: 'Homme',
         language: 'Français',
         dobDay: '31',
         dobMonth: 'September',
@@ -40,9 +61,14 @@ const UserProfileView = () => {
         facebook: 'facebook.com/envato',
         google: 'zachary Ruiz',
         slogan: 'Land acquisition Specialist',
+        access: {
+            level: 'standard',
+            storage: 0.3
+        },
         paymentMethods: [
-            { type: 'Visa', last4: '8314', expires: '06/24' },
-            { type: 'MasterCard', last4: '8314', expires: '05/25' }
+            { type: 'MTN MoMo', logo: MoMoLogo, provider: 'MTN CG', last4: '8314', expires: '06/24' },
+            { type: 'Airtel Money', logo: AirtelLogo, provider: 'Airtel CG', last4: '8314', expires: '05/25' },
+            { type: 'PayPal', logo: PayPalLogo, provider: 'PayPal CG', last4: '8314', expires: '05/25' }
         ]
     });
 
@@ -57,9 +83,12 @@ const UserProfileView = () => {
     const [toastMessage, setToastMessage] = useState('');
     const [toastSeverity, setToastSeverity] = useState('success');
     const [alertTitle, setAlertTitle] = useState('Titre');
+    const [birthDate, setBirthDate] = useState(new Date(2000, 0, 1)); // Date par défaut (01/01/1990)
+    const [registrationDate, setRegistrationDate] = useState(new Date()); // Date actuelle par défaut
 
     // Charger l'avatar du localStorage si disponible
     useEffect(() => {
+        console.log(formData, formData.genre, formData.language);
         const savedAvatar = localStorage.getItem('user-avatar');
         if (savedAvatar) {
             setAvatar(savedAvatar);
@@ -130,8 +159,83 @@ const UserProfileView = () => {
         }
     };
 
+    //** Fonction pour gérer le changement de date de naissance */
+    // Validation : Ne pas permettre une date de naissance future
+    const handleBirthDateChange = (newValue) => {
+        if (newValue > new Date()) {
+            alert('La date de naissance ne peut pas être dans le futur.');
+        } else {
+            setBirthDate(newValue);
+        }
+    };
+
+    // Validation : Date d'inscription ne peut pas être dans le futur
+    const handleRegistrationDateChange = (newValue) => {
+        if (newValue > new Date()) {
+            alert("La date d'inscription ne peut pas être dans le futur.");
+        } else {
+            setRegistrationDate(newValue);
+        }
+    };
+
+    // Fonction pour gérer la validation du formulaire
     const handleToastClose = () => {
         setToastOpen(false);
+    };
+
+    /** Methode de payement */
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedMethods, setSelectedMethods] = useState([]);
+
+    // Méthodes disponibles (y compris Visa et MasterCard)
+    const availableMethods = [
+        { type: 'Visa', logo: VisaLogo, provider: '', last4: '8314', expires: '06/24' },
+        { type: 'MasterCard', logo: MasterCardLogo, provider: '', last4: '8314', expires: '06/24' },
+        { type: 'MTN MoMo', logo: MoMoLogo, provider: 'MTN CG', last4: '8314', expires: '06/24' },
+        { type: 'Airtel Money', logo: AirtelLogo, provider: 'Airtel CG', last4: '8314', expires: '06/24' },
+        { type: 'PayPal', logo: PayPalLogo, provider: 'PayPal CG', last4: '8314', expires: '06/24' }
+    ];
+
+    // Ouvre la modale pour ajouter une méthode
+    const handleAddPaymentMethodClick = () => {
+        // Initialise les méthodes déjà présentes comme sélectionnées
+        const alreadySelected = formData.paymentMethods.map((m) => m.type);
+        setSelectedMethods(alreadySelected);
+        setOpenDialog(true);
+    };
+
+    // Ferme la modale
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    // Gère la sélection/désélection des méthodes de paiement
+    const handleMethodToggle = (methodType) => {
+        if (selectedMethods.includes(methodType)) {
+            setSelectedMethods(selectedMethods.filter((method) => method !== methodType));
+        } else {
+            setSelectedMethods([...selectedMethods, methodType]);
+        }
+    };
+
+    // Ajoute les méthodes sélectionnées au tableau `paymentMethods`
+    const handleAddSelectedMethods = () => {
+        // Filtre les méthodes sélectionnées qui ne sont pas encore dans formData.paymentMethods
+        const newMethods = availableMethods.filter(
+            (method) => selectedMethods.includes(method.type) && !formData.paymentMethods.some((m) => m.type === method.type)
+        );
+
+        // Mise à jour du tableau avec les nouvelles méthodes ajoutées
+        setFormData({ ...formData, paymentMethods: [...formData.paymentMethods, ...newMethods] });
+        console.log('Updated Payment Methods:', formData.paymentMethods);
+        setOpenDialog(false); // Fermer la boîte de dialogue après ajout
+    };
+
+    // Fonction pour gérer la suppression d'une méthode de paiement
+    const handleRemovePaymentMethod = (index) => {
+        const updatedMethods = [...formData.paymentMethods];
+        updatedMethods.splice(index, 1);
+        setFormData({ ...formData, paymentMethods: updatedMethods });
     };
 
     return (
@@ -159,7 +263,7 @@ const UserProfileView = () => {
                     </Grid>
 
                     <Grid item>
-                        <Typography variant="h6">
+                        <Typography variant="h4">
                             {firstName} {lastName}
                         </Typography>
                     </Grid>
@@ -210,6 +314,10 @@ const UserProfileView = () => {
                             </Grid>
                         </>
                     )}
+
+                    <Grid item xs={12}>
+                        <UserAccess accessLevel={formData.access.level} />
+                    </Grid>
 
                     {/* Notification de succès/erreur */}
                     <Snackbar open={toastOpen} autoHideDuration={3000} onClose={handleToastClose} sx={{ width: '100%', textAlign: 'left' }}>
@@ -263,63 +371,66 @@ const UserProfileView = () => {
 
                         <Grid item xs={12} sm={6} mt={2}>
                             <FormControl fullWidth>
-                                <InputLabel>Gender</InputLabel>
-                                <Select name="gender" value={formData.gender} onChange={handleChange}>
-                                    <MenuItem value="Male">Male</MenuItem>
-                                    <MenuItem value="Female">Female</MenuItem>
-                                    <MenuItem value="Other">Other</MenuItem>
+                                <InputLabel id="gender-label">Genre</InputLabel>
+                                <Select labelId="gender-label" label="genre" name="genre" value={formData.genre} onChange={handleChange}>
+                                    <MenuItem value="Homme">Homme</MenuItem>
+                                    <MenuItem value="Femme">Femme</MenuItem>
+                                    <MenuItem value="Outre">Outre</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
 
                         <Grid item xs={12} sm={6} mt={2}>
                             <FormControl fullWidth>
-                                <InputLabel>Language</InputLabel>
-                                <Select name="language" value={formData.language} onChange={handleChange}>
-                                    <MenuItem value="English">Français</MenuItem>
-                                    <MenuItem value="Spanish">English</MenuItem>
+                                <InputLabel id="Langue-label">Langue</InputLabel>
+                                <Select
+                                    labelId="Langue-label"
+                                    label="Langue"
+                                    name="language"
+                                    value={formData.language}
+                                    onChange={handleChange}
+                                >
+                                    <MenuItem value="Français">Français</MenuItem>
+                                    <MenuItem value="English">English</MenuItem>
                                     {/* Add other languages */}
                                 </Select>
                             </FormControl>
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={4}>
-                                    <TextField label="Day" name="dobDay" value={formData.dobDay} onChange={handleChange} select fullWidth>
-                                        <MenuItem value="31">31</MenuItem>
-                                        {/* Add other days */}
-                                    </TextField>
-                                </Grid>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={fr}>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <DatePicker
+                                            fullWidth
+                                            label="Date de naissance"
+                                            value={birthDate}
+                                            onChange={handleBirthDateChange}
+                                            renderInput={(params) => <TextField {...params} fullWidth />}
+                                            inputFormat="dd/MM/yyyy" // Format de la date
+                                            disableFuture // Désactive les dates futures
+                                            sx={{ width: '100%' }}
+                                        />
+                                    </Grid>
 
-                                <Grid item xs={4}>
-                                    <TextField
-                                        label="Month"
-                                        name="dobMonth"
-                                        value={formData.dobMonth}
-                                        onChange={handleChange}
-                                        select
-                                        fullWidth
-                                    >
-                                        <MenuItem value="September">September</MenuItem>
-                                        {/* Add other months */}
-                                    </TextField>
-                                </Grid>
-
-                                <Grid item xs={4}>
-                                    <TextField
-                                        label="Year"
-                                        name="dobYear"
-                                        value={formData.dobYear}
-                                        onChange={handleChange}
-                                        select
-                                        fullWidth
-                                    >
-                                        <MenuItem value="1990">1990</MenuItem>
-                                        {/* Add other years */}
-                                    </TextField>
+                                    <Grid item xs={6}>
+                                        <DatePicker
+                                            label="Date d'inscription"
+                                            value={registrationDate}
+                                            onChange={handleRegistrationDateChange}
+                                            renderInput={(params) => <TextField {...params} fullWidth />}
+                                            inputFormat="dd/MM/yyyy" // Format de la date
+                                            maxDate={new Date()} // Empêche les dates futures
+                                            disabled
+                                            sx={{ width: '100%' }}
+                                        />
+                                    </Grid>
                                 </Grid>
                             </Grid>
+                        </LocalizationProvider>
+
+                        <Grid item xs={12} mt={2}>
+                            <StorageCard accessLevel={formData.access.level} storageUsed={formData.access.storage} />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -327,20 +438,77 @@ const UserProfileView = () => {
                 <Grid item xs={12}>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6">Payment Methods</Typography>
+                            <Typography variant="h5">Payment Methods</Typography>
                             {formData.paymentMethods.map((method, index) => (
-                                <Grid container justifyContent="space-between" alignItems="center" key={index} sx={{ mt: 2 }}>
-                                    <Typography>
-                                        {method.type} ...{method.last4} (Expires {method.expires})
-                                    </Typography>
-                                    <Button color="error">Supprimer</Button>
+                                <Grid container justifyContent="space-between" alignItems="center" key={method.type} sx={{ mt: 2 }}>
+                                    <Grid item xs={2}>
+                                        {/* <Avatar src={method.logo} alt={`${method.type} logo`} */}
+                                        <img
+                                            src={method.logo}
+                                            alt={`${method.type} logo`}
+                                            style={{ width: 40, height: 40, borderRadius: '30%' }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Typography>
+                                            <b>{method.type}</b>{' '}
+                                            {method.provider && <i style={{ marginLeft: '5vw' }}>Par {method.provider}</i>}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <Button color="error" onClick={() => handleRemovePaymentMethod(index)}>
+                                            Supprimer
+                                        </Button>
+                                    </Grid>
                                 </Grid>
                             ))}
-                            <Button variant="contained" color="secondary" sx={{ mt: 2 }}>
-                                Ajouter méthode de payement
+                            <Button variant="contained" color="secondary" sx={{ mt: 2 }} onClick={handleAddPaymentMethodClick}>
+                                Ajouter méthode de paiement
                             </Button>
                         </CardContent>
                     </Card>
+
+                    {/* Dialog pour ajouter une méthode de paiement */}
+                    <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
+                        <DialogTitle>Ajouter une méthode de paiement</DialogTitle>
+                        <DialogContent>
+                            <Grid container spacing={2}>
+                                {availableMethods.map((method /*, index*/) => (
+                                    <Grid item xs={12} key={method.type}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={selectedMethods.includes(method.type)}
+                                                    onChange={() => handleMethodToggle(method.type)}
+                                                    disabled={formData.paymentMethods.some((m) => m.type === method.type)}
+                                                />
+                                            }
+                                            label={
+                                                <Grid container alignItems="center">
+                                                    <Avatar
+                                                        src={method.logo}
+                                                        alt={`${method.type} logo`}
+                                                        style={{ width: 40, height: 40 }}
+                                                    />
+                                                    <Typography variant="body1" style={{ marginLeft: '1vw' }}>
+                                                        {method.type}
+                                                    </Typography>
+                                                </Grid>
+                                            }
+                                        />
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog} color="secondary">
+                                Annuler
+                            </Button>
+                            <Button onClick={handleAddSelectedMethods} color="secondary" variant="contained">
+                                Ajouter sélectionnées
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Grid>
 
                 <Grid item xs={12} align="right">

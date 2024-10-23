@@ -33,7 +33,7 @@ const utilities = {
             type: 'item',
             url: '/utils/util-typography',
             icon: icons.IconBrandGoogleMaps, //IconMap2
-            breadcrumbs: false
+            breadcrumbs: true
         },
         {
             id: 'favoris',
@@ -41,16 +41,17 @@ const utilities = {
             type: 'item',
             url: '/utils/util-color',
             icon: icons.IconStar,
-            breadcrumbs: false
-        },
-        {
-            id: 'stats',
-            title: 'Stats',
-            type: 'item',
-            url: '/utils/util-shadow',
-            icon: icons.IconDeviceWatchStats,
-            breadcrumbs: false
+            breadcrumbs: true
         }
+        // ,
+        // {
+        //     id: 'stats',
+        //     title: 'Stats',
+        //     type: 'item',
+        //     url: '/utils/util-shadow',
+        //     icon: icons.IconDeviceWatchStats,
+        //     breadcrumbs: false
+        // }
     ]
 };
 

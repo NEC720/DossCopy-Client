@@ -7,16 +7,31 @@ import Loadable from 'ui-component/Loadable';
 import PrintRequest from 'views/Imprimer/PrintRequest';
 import { UserProfile } from 'views/profileSection/UserProfile';
 import UserProfileView from 'views/profileSection/UserProfileView';
+// import ContactSupport from 'views/supportTech/ContactSupport';
+// import StatsPage from 'views/suivis/stats/StatsPage';
+// import StoragePage from 'views/suivis/storage/StoragePage';
+// import FileExplorer from 'views/suivis/storage/FileExplorer';
+// import ActivityHistory from 'views/suivis/history/ActivityHistory';
+// import FavoriteCybers from 'views/cybers/favorites/FavoriteCybers';
+// import CyberList from 'views/cybers/places/components/CyberList';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 
 // utilities routing
-const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
-const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
+const CyberInfos = Loadable(lazy(() => import('views/cybers/places/CyberInfos')));
+const CyberList = Loadable(lazy(() => import('views/cybers/places/components/CyberList')));
+const FavoriteCybers = Loadable(lazy(() => import('views/cybers/favorites/FavoriteCybers')));
+const ActivityHistory = Loadable(lazy(() => import('views/suivis/history/ActivityHistory')));
+// const FileExplorer = Loadable(lazy(() => import('views/suivis/storage/FileExplorer')));
+const StoragePage = Loadable(lazy(() => import('views/suivis/storage/StoragePage')));
+const StatsPage = Loadable(lazy(() => import('views/suivis/stats/StatsPage')));
+// const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
+// const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
 const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
 // const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
 // const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
+const ContactSupport = Loadable(lazy(() => import('views/supportTech/ContactSupport')));
 
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
@@ -54,7 +69,7 @@ const MainRoutes = {
             children: [
                 {
                     path: 'util-typography',
-                    element: <UtilsTypography />
+                    element: <CyberList />
                 }
             ]
         },
@@ -63,7 +78,7 @@ const MainRoutes = {
             children: [
                 {
                     path: 'util-color',
-                    element: <UtilsColor />
+                    element: <FavoriteCybers />
                 }
             ]
         },
@@ -100,7 +115,7 @@ const MainRoutes = {
             children: [
                 {
                     path: 'history',
-                    element: <SamplePage />
+                    element: <ActivityHistory />
                 }
             ]
         },
@@ -109,9 +124,23 @@ const MainRoutes = {
             children: [
                 {
                     path: 'userstats',
-                    element: <SamplePage />
+                    element: <StatsPage />
                 }
             ]
+        },
+        {
+            path: 'suivi',
+            children: [
+                {
+                    path: 'stockage',
+                    element: <StoragePage />
+                }
+            ]
+        },
+
+        {
+            path: 'supportTech',
+            element: <ContactSupport />
         },
 
         {
@@ -126,6 +155,10 @@ const MainRoutes = {
         {
             path: '/apps/profiles/account/basic',
             element: <UserProfileView />
+        },
+        {
+            path: '/cybers/cyberInfos',
+            element: <CyberInfos />
         }
     ]
 };

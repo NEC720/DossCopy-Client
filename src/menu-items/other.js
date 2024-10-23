@@ -28,35 +28,12 @@ const other = {
     id: 'sample-docs-roadmap',
     type: 'group',
     children: [
+        // Où était le menu suivi sans storage
         {
-            id: 'suivi',
-            title: 'Suivi',
-            type: 'collapse',
-            icon: icons.IconHomeStats,
-            children: [
-                {
-                    id: 'history',
-                    title: 'Historique',
-                    type: 'item',
-                    url: '/sample-page',
-                    icon: icons.IconHistory
-                    // target: true
-                },
-                {
-                    id: 'userstats',
-                    title: 'Statistiques',
-                    type: 'item',
-                    url: '/sample-page',
-                    icon: icons.IconCalendarStats
-                    // target: true
-                }
-            ]
-        },
-        {
-            id: 'sample-page',
+            id: 'support-tech',
             title: 'Contacter le Support', //Sample Page
             type: 'item',
-            url: '/sample-page',
+            url: '/supportTech',
             icon: icons.IconPhoneCall,
             breadcrumbs: false
         },
